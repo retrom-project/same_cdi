@@ -1,0 +1,47 @@
+name: Core quality and release
+on:
+  pull_request:
+    branches: ["retrom/gcfb05d803f54"]
+  push:
+    tags: ["retrom-core-gcfb05d803f54-r*"]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install archive tool
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+      - name: Validate release identity
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
+          test "$(git rev-list -n 1 "$GITHUB_REF_NAME")" = "$GITHUB_SHA"
+          git fetch origin 'refs/heads/retrom/gcfb05d803f54:refs/remotes/origin/retrom/gcfb05d803f54'
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/retrom/gcfb05d803f54
+      - name: Build and verify core
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/core-release"
+          tag=retrom-core-gcfb05d803f54-r1-rc.1
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then tag="$GITHUB_REF_NAME"; fi
+          python3 .github/rpg-runtime/build-release.py --output "$RUNNER_TEMP/core-release" --tag "$tag"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: core-release
+          path: ${{ runner.temp }}/core-release/*
+          if-no-files-found: error
+      - name: Publish immutable release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          flags=()
+          if [[ "$GITHUB_REF_NAME" == *-rc.* ]]; then flags+=(--prerelease); fi
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP/core-release/"* --verify-tag --generate-notes "${flags[@]}"

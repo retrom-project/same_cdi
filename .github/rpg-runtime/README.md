@@ -33,3 +33,8 @@ PFB import, preview, launch, checkpoint and restore flows. Check fresh startup,
 continuous music, movement/SFX, guest and host mute, exit and a new launch restored
 from a checkpoint. Game files, BIOS, recordings and local evidence are not source
 fixtures and must not be committed.
+
+Formal publication uses `build-release.py --output <absolute-empty-directory> --tag <tag>`.
+PR and tag CI run the CDIC timing regression and the same pinned Web build.
+Only annotated tags reachable from `retrom/gcfb05d803f54` may publish. The complete
+source archive, license and asset integrity report accompany every release.
