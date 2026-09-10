@@ -695,7 +695,9 @@ void cdicdic_device::process_audio_map()
 	else
 	{
 		m_decode_addr = 0xffff;
-		m_audio_sector_counter = m_audio_format_sectors;
+		// Release the stopped map on the next tick so a new map can start.
+		// Backport of MAME 904d27ff43b0 (#12988).
+		m_audio_sector_counter = 0;
 	}
 
 	if (was_decoding)
@@ -1283,7 +1285,9 @@ void cdicdic_device::init_disc_read(uint8_t disc_mode)
 	m_disc_command = m_command;
 	m_disc_mode = disc_mode;
 	m_curr_lba = lba_from_time();
-	m_disc_spinup_counter = 1;
+	// The guest needs this spin-up interval before the first sector arrives.
+	// Backport of MAME 9c6c88b0697f (#14703); seek-distance timing remains a TODO.
+	m_disc_spinup_counter = 6;
 }
 
 void cdicdic_device::cancel_disc_read()
