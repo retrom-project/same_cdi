@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "forkRepository": "https://github.com/retrom-project/same_cdi",
+  "defaultBranch": "retrom/gcfb05d803f54",
+  "upstreamMirrorBranch": "master",
+  "upstreams": [
+    {
+      "role": "emulatorjs-core",
+      "repository": "https://github.com/EmulatorJS/same_cdi",
+      "refType": "COMMIT",
+      "ref": "cfb05d803f54130adf94efef88edd816d01df7a3",
+      "commit": "cfb05d803f54130adf94efef88edd816d01df7a3"
+    },
+    {
+      "role": "emulatorjs-retroarch-linker",
+      "repository": "https://github.com/EmulatorJS/RetroArch",
+      "refType": "COMMIT",
+      "ref": "6dd4353937ef48b6ec0bfbdbb15d1c5992d86927",
+      "commit": "6dd4353937ef48b6ec0bfbdbb15d1c5992d86927"
+    }
+  ],
+  "adapterAbi": "emulatorjs-state-v1",
+  "releaseAssets": [
+    "same_cdi-wasm.data",
+    "COPYING",
+    "source.tar.gz",
+    "rpg-runtime-release.json"
+  ]
+}
