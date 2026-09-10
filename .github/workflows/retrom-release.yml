@@ -20,8 +20,11 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           set -euo pipefail
-          test "$(git cat-file -t "$GITHUB_REF_NAME")" = tag
-          test "$(git rev-list -n 1 "$GITHUB_REF_NAME")" = "$GITHUB_SHA"
+          remote_tag_ref="refs/retrom-release/$GITHUB_REF_NAME"
+          git fetch origin "refs/tags/$GITHUB_REF_NAME:$remote_tag_ref"
+          test "$(git cat-file -t "$remote_tag_ref")" = tag
+          test "$(git rev-list -n 1 "$remote_tag_ref")" = "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git fetch origin 'refs/heads/retrom/gcfb05d803f54:refs/remotes/origin/retrom/gcfb05d803f54'
           git merge-base --is-ancestor "$GITHUB_SHA" origin/retrom/gcfb05d803f54
       - name: Build and verify core
