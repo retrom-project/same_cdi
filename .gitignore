@@ -55,3 +55,5 @@ regtests/jedutil/output
 ._uismall.bdf
 
 !/retrom-fork.json
+
+__pycache__/
