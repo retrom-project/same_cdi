@@ -53,3 +53,5 @@ regtests/jedutil/output
 /samples
 ._README.md
 ._uismall.bdf
+
+!/retrom-fork.json
